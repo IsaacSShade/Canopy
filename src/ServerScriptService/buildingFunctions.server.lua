@@ -39,7 +39,7 @@ Output: Places specified building
 local function placeBuilding(player, tool, building, position, angles)
 	local buildingClone = building:Clone()
 	
-	buildingClone.PrimaryPart:PivotTo(CFrame.new(position) * angles)
+	buildingClone.PrimaryPart:PivotTo(CFrame.new(position) * buildingClone.PrimaryPart.CFrame.Rotation)
 	buildingClone.Parent = game.Workspace
 	
 	tool.Parent = game.ReplicatedStorage

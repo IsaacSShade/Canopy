@@ -21,6 +21,14 @@ local function ghostBuilding(building, playerInWorkspace)
 end
 
 --[[
+Input: Vector3 coordinates
+Output: A vector3 with rounded values to whole numbers (excluding y value)
+]]
+local function snap(position)
+	return Vector3.new(math.round(position.X), position.Y, math.round(position.Z))
+end
+
+--[[
 Input: The building's ghost model (This function is getting fired from the server)
 Output: Changes the building's position to the mouse's and checks if the anchoring part underneath is on ground (a valid surface) and gives it a red color if not successful.
 ]]
@@ -69,8 +77,9 @@ local function moveGhostBuilding(buildingGhost)
 		end
 	end
 	
+	local position = snap(mouse.Hit.Position)
 	--Changes model's position
-	primaryPart:PivotTo(CFrame.new(mouse.Hit.Position) * CFrame.Angles(0, 0, math.rad(90)))
+	primaryPart:PivotTo(CFrame.new(position) * primaryPart.CFrame.Rotation)
 end
 
 --[[
