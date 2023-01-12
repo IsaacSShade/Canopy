@@ -91,7 +91,7 @@ local function placeBuilding(building)
 	local buildingGhost = game.Workspace.mouseFilter:FindFirstChild(building.Name .. " GHOST " .. player.Name)
 	
 	if buildingGhost:FindFirstChild("moving part", true).Color == Color3.fromRGB(34, 80, 78) then
-		game.ReplicatedStorage.remoteEvents.placeBuilding:FireServer(script.Parent, building, mouse.Hit.Position, CFrame.Angles(0, 0, math.rad(90)))
+		game.ReplicatedStorage.remoteEvents.placeBuilding:FireServer(script.Parent, building, mouse.Hit.Position)
 	else
 		game.Workspace.soundEffects:FindFirstChild("buzzer").Playing = true
 	end

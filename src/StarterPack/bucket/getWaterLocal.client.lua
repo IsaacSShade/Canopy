@@ -44,7 +44,13 @@ Fires remote event to: game.ServerScriptService.waterFunctions - giveWaterServer
 local function giveWater (target, tool)
 	if script.Parent.Parent.Name == player.Name then
 		--Checking that this part can be transferred to
-		local dropOffWater = target:FindFirstChild("waterStored", true)
+		local actualTarget = target
+
+		if target.Parent:IsA("Model") or target.Parent.Name == "Tree" then
+			actualTarget = target.Parent
+		end
+
+		local dropOffWater = actualTarget:FindFirstChild("waterStored", true)
 		
 		if dropOffWater then
 			--Getting variables

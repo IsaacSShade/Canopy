@@ -36,7 +36,7 @@ end
 Input: Player that fired the event, the tool, and building in remote storage it should place down
 Output: Places specified building
 ]]
-local function placeBuilding(player, tool, building, position, angles)
+local function placeBuilding(player, tool, building, position)
 	local buildingClone = building:Clone()
 	
 	buildingClone.PrimaryPart:PivotTo(CFrame.new(position) * buildingClone.PrimaryPart.CFrame.Rotation)
