@@ -12,6 +12,7 @@ function growPart.yScale(part, xSize, ySize, zSize, startingYPosition, waterStor
 
 	part.Position = Vector3.new(part.Position.X, startingYPosition + (newYSize / 2), part.Position.Z)
 	part.Size = Vector3.new((scale * xSize), newYSize, (scale * zSize))
+	
 
 	return (newYSize / 2)
 end

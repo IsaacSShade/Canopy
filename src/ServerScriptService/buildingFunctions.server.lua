@@ -5,8 +5,11 @@ Fires local event to: ghostBuilding - placeObjectLocal script
 ]]
 local function createGhostBuilding(player, tool, building)
 	local buildingGhost = building:Clone()
+	local placeable = Instance.new("BoolValue", buildingGhost)
 	local positionWithMouse = nil
 
+	placeable.Name = "placeable"
+	placeable.Value = true
 	buildingGhost.Name = building.Name .. " GHOST " .. player.Name
 	buildingGhost.Parent = game.Workspace.mouseFilter	
 	
@@ -26,7 +29,7 @@ local function createGhostBuilding(player, tool, building)
 		if not tool then
 			break
 		end
-		game.ReplicatedStorage.remoteEvents.ghostBuilding:FireClient(player, buildingGhost)
+		game.ReplicatedStorage.remoteEvents.ghostBuilding:FireClient(player, buildingGhost, placeable)
 	end
 	
 	buildingGhost:Destroy()
@@ -38,9 +41,17 @@ Output: Places specified building
 ]]
 local function placeBuilding(player, tool, building, position)
 	local buildingClone = building:Clone()
+	local playerTracker = buildingClone:FindFirstChild("ownerName")
 	
 	buildingClone.PrimaryPart:PivotTo(CFrame.new(position) * buildingClone.PrimaryPart.CFrame.Rotation)
 	buildingClone.Parent = game.Workspace
+	
+	if not playerTracker then --instances stringvalue to track object owner
+		playerTracker = Instance.new("StringValue")
+		playerTracker.Name = "ownerName"
+		playerTracker.Value = player.Name
+		playerTracker.Parent = buildingClone
+	end
 	
 	tool.Parent = game.ReplicatedStorage
 	wait(1)

@@ -1,5 +1,5 @@
-local CONSTANT_FOLDER_NAME = "waterHarvesters"
-local CONSTANT_BUILDING_NAME = "Well"
+local CONSTANT_FOLDER_NAME = "waterUtility"
+local CONSTANT_BUILDING_NAME = "Detector"
 local CONSTANT_BUILDING = game.ReplicatedStorage.buildingStorage:FindFirstChild(CONSTANT_FOLDER_NAME):FindFirstChild(CONSTANT_BUILDING_NAME)
 
 --[[^^ CONSTANTS ^^]]--
@@ -29,20 +29,18 @@ local function snap(position)
 end
 
 --[[
-Input: The building's ghost model, and it's placeability bool value (This function is getting fired from the server)
+Input: The building's ghost model (This function is getting fired from the server)
 Output: Changes the building's position to the mouse's and checks if the anchoring part underneath is on ground (a valid surface) and gives it a red color if not successful.
 ]]
-local function moveGhostBuilding(buildingGhost, placeable)
+local function moveGhostBuilding(buildingGhost)
 	
 	local primaryPart = buildingGhost:FindFirstChild(buildingGhost.PrimaryPart.Name, true)
-	placeable.Value = false
+	local success = false
 	
 	--First checking if the anchoring part is inside the ground
 	for i,part in pairs(game.Workspace:GetPartsInPart(primaryPart)) do
 		if part.Name == "grass" or part.Name == "ground" then
-			placeable.Value = true
-		else
-			
+			success = true
 		end
 	end
 	
@@ -52,15 +50,14 @@ local function moveGhostBuilding(buildingGhost, placeable)
 		if part == buildingGhost:FindFirstChild(part.Name) then
 		
 		else
-			print("intersecting")                  --Looking for bugs
-			placeable.Value = false
+			success = false
 		end
 	end
 	
 	-- Making the building visible for the player while everyone else it's invisible and changes color depending on if it's a valid location
 	for i,child in pairs (buildingGhost:GetDescendants()) do
 		if child:IsA("MeshPart") then
-			if placeable.Value then
+			if success then
 				child.TextureID = "rbxassetid://12044968766"
 			else
 				child.TextureID = "rbxassetid://12044968190"
@@ -70,7 +67,7 @@ local function moveGhostBuilding(buildingGhost, placeable)
 		end
 		
 		if child:IsA("Part") and child.Name ~= "detection part" then
-			if placeable.Value then
+			if success then
 				child.Color = Color3.fromRGB(34, 80, 78)
 			else
 				child.Color = Color3.fromRGB(255, 25, 17)
@@ -88,15 +85,14 @@ end
 --[[
 Input: The folder the building is in, and the building's name
 Output: Fires the remote event "placeBuilding" on buildingFunctions if it's a valid location. If not, it plays a buzzing noise.
-]] 
+]]
 local function placeBuilding(building)
 	
 	local buildingGhost = game.Workspace.mouseFilter:FindFirstChild(building.Name .. " GHOST " .. player.Name)
 	
-	if buildingGhost:FindFirstChild("placeable").Value == true then
+	if buildingGhost:FindFirstChild("moving part", true).Color == Color3.fromRGB(34, 80, 78) then
 		game.ReplicatedStorage.remoteEvents.placeBuilding:FireServer(script.Parent, building, mouse.Hit.Position)
 	else
-		print("Not placing")
 		game.Workspace.soundEffects:FindFirstChild("buzzer").Playing = true
 	end
 	
